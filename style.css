@@ -1,0 +1,136 @@
+html body {
+    width:  100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+canvas {
+    width: 75%;
+    height: 100%;
+    background: #21445a;
+    cursor: url(./img/cursor.svg) 15 15, auto;
+}
+
+aside {
+    width: 25%;
+    height: 100%;
+    background-color: rgb(235, 235, 235);
+    position: fixed;
+    right: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    font-family: monospace;
+}
+
+.banner-wrapper {
+  border-bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.banner {
+  width: 90%;
+  height: 47px;
+  background-image: url(./img/SP-logo-big.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-top: 20px;
+}
+
+.subhead {
+  font-weight: 900;
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 7px;
+  margin-bottom: 10px;
+}
+
+.btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.button-7 {
+    background-color: #0095ff;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: rgba(255, 255, 255, .4) 0 1px 0 0 inset;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.15385;
+    margin: 0;
+    outline: none;
+    padding: 8px .8em;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: 90%;
+    margin-top: 10px;
+  }
+  
+  .button-7:hover,
+  .button-7:focus {
+    background-color: #07c;
+  }
+  
+  .button-7:focus {
+    box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+  }
+  
+  .button-7:active {
+    background-color: #0064bd;
+    box-shadow: none;
+  }
+
+  .button-7:disabled,
+  button[disabled]{
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+    cursor:default;
+  }
+
+.check {
+  margin-top: 5px;
+  margin-left: 20px;
+}
+
+.fff {
+  color: rgb(255, 0, 221)
+}
+
+@media (width <= 800px) {
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* aside {
+    display: none;
+  } */
+
+  .banner-wrapper {
+    display: none;
+  }
+}

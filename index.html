@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SimplePlanes Interactive Map</title>
+        <link rel="shortcut icon" href="./img/SP-logo.png" type="image/x-icon">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <aside id="sidebar">
+            <div class="banner-wrapper">
+                <div class="banner"></div>
+                <span class="subhead">Interactive Map</span>
+            </div>
+
+            <div class="btns">
+                <input type="button" value="Wright Isles" class="button-7" id="WI">
+                <input type="button" value="Krakabloa" class="button-7" id="KI">
+                <input type="button" value="Avalanche" class="button-7" id="AVA">
+                <input type="button" value="SkyPark City" class="button-7" id="SC">
+            </div>
+            
+
+            <div class="check">
+                <input type="checkbox" id="displayCoordinates" checked>
+                <label for="vehicle1"> Display Coordinates</label><br>
+            </div>
+            <div class="check">
+                <input type="checkbox" id="displayAxis" checked>
+                <label for="vehicle1"> Display Center/Axis</label><br>
+            </div>
+            <div class="check">
+                <input type="checkbox" id="displayAirports" checked>
+                <label for="vehicle1"> Display Airports</label><br>
+            </div>
+
+            <!-- <div class="tools">
+                <input type="button" value="Measure Distance" class="button-7" id="measure">
+            </div> -->
+            
+        </aside>
+        <canvas width="800px" height="670px" id="canvas"></canvas>
+
+        <!-- Island Images -->
+        <div style="display:none;">
+            <img
+              id="wright"
+              src="./img/Wright-Islands.png"
+              width="758"
+              height="731" />
+          </div>
+
+        <!-- Icons -->
+        <div style="display:none;">
+            <img
+              id="axis"
+              src="./img/icons/Axis.svg"
+              width="30"
+              height="30" />
+          </div>
+        <div style="display:none;">
+            <img
+              id="airport"
+              src="./img/icons/plane-departure-solid.svg"
+              width="30"
+              height="30" />
+          </div>
+
+
+        <script src="./script.js"></script>
+    </body>
+</html>
