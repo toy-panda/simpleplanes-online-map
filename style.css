@@ -32,10 +32,7 @@ aside {
 
 .banner {
   width: 90%;
-  height: 47px;
-  background-image: url(./img/SP-logo-big.png);
-  background-repeat: no-repeat;
-  background-size: contain;
+  height: auto;
   margin-top: 20px;
 }
 
@@ -112,6 +109,19 @@ aside {
 
 .fff {
   color: rgb(255, 0, 221)
+}
+
+.credits {
+  display: block;
+  position: absolute;
+  bottom: 10px;
+  left: 40%;
+}
+
+.credits a {
+  color: #07c;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 @media (width <= 800px) {
