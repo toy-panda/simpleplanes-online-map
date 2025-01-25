@@ -76,7 +76,7 @@ let icons = {
             x: 5894,
             y: 4703
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
     },
     NorthRunway : {
@@ -86,7 +86,7 @@ let icons = {
             x: -4449,
             y: -6173
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
     },
     BanditAirport : {
@@ -96,7 +96,7 @@ let icons = {
             x: 14416,
             y: -58625
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
     },
     YagerAirport : {
@@ -106,7 +106,7 @@ let icons = {
             x: 26113,
             y: -52471
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
     },
     YagerDock : {
@@ -167,7 +167,6 @@ const proceedPathes = (k) => {
     ctx.beginPath();
     ctx.strokeStyle = "rgb(59, 160, 255)";
     ctx.moveTo(icons.USSTiny.position.x, icons.USSTiny.position.y);
-    //ctx.lineTo(3839, 10503);
     ctx.lineTo(14510.67, 20418.54);
     ctx.stroke();
     // USS Beast
@@ -184,6 +183,7 @@ const proceedPathes = (k) => {
     ctx.moveTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y);
     ctx.lineTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y-20000);
     ctx.stroke();
+    ctx.setLineDash([]);
 }
 
 const processIcons = (k) => {
@@ -246,7 +246,7 @@ const render = (e) => {
     if (!isMobile) {
         if (ctx.canvas.height != sidebar.offsetHeight) {
             ctx.canvas.height = sidebar.offsetHeight;
-            ctx.canvas.width = window.innerWidth * 0.75;
+            ctx.canvas.width = window.innerWidth - sidebar.offsetWidth;
         }
     }
 }
@@ -312,24 +312,22 @@ const onMouseWheel = (e) => {
     updateZooming(e)
 
     render(e)
-
-    //console.log(e)
 }
 
 canvas.addEventListener("wheel", onMouseWheel);
 
-canvas.addEventListener("pointerdown", (e) => {
+canvas.addEventListener("mousedown", (e) => {
     previousX = e.clientX;
     previousY = e.clientY;
 
-    canvas.addEventListener("pointermove", onMouseMove);
+    canvas.addEventListener("mousemove", onMouseMove);
 })
 
-canvas.addEventListener("pointerup", (e) => {
-    canvas.removeEventListener("pointermove", onMouseMove);
+canvas.addEventListener("mouseup", (e) => {
+    canvas.removeEventListener("mousemove", onMouseMove);
 })
 
-canvas.addEventListener("pointermove", (e) => {
+canvas.addEventListener("mousemove", (e) => {
     render(e);
 })
 
