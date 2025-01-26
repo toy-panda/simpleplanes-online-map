@@ -10,15 +10,17 @@
     <body>
         <aside id="sidebar">
             <div class="banner-wrapper">
-                <div class="banner"></div>
+                <img src="./img/SP-logo-big.png" alt="" class="banner">
                 <span class="subhead">Interactive Map</span>
+                <label class="credits">by <a href="https://www.simpleplanes.com/u/rimiha" target="_blank">u/rimiha</a></label>
             </div>
 
             <div class="btns">
                 <input type="button" value="Wright Isles" class="button-7" id="WI">
                 <input type="button" value="Krakabloa" class="button-7" id="KI">
-                <input type="button" value="Avalanche" class="button-7" id="AVA">
+                <input type="button" value="Snowstone" class="button-7" id="AVA" disabled>
                 <input type="button" value="SkyPark City" class="button-7" id="SC">
+                <input type="button" value="Maywar" class="button-7" id="MW" disabled>
             </div>
             
 
@@ -32,13 +34,20 @@
             </div>
             <div class="check">
                 <input type="checkbox" id="displayAirports" checked>
-                <label for="vehicle1"> Display Airports</label><br>
+                <label for="vehicle1"> Display Airfields</label><br>
             </div>
-
-            <!-- <div class="tools">
-                <input type="button" value="Measure Distance" class="button-7" id="measure">
-            </div> -->
-            
+            <div class="check">
+                <input type="checkbox" id="displayPorts" checked>
+                <label for="vehicle1"> Display Dockyard</label><br>
+            </div>
+            <div class="check">
+                <input type="checkbox" id="displayShips" checked>
+                <label for="vehicle1"> Display Ships</label><br>
+            </div>
+            <div class="footer">
+                <a href="https://youtu.be/dQw4w9WgXcQ" target="_blank">Forum post for feedback and suggestions</a>
+                <label>(Coming Soon)</label>
+            </div>
         </aside>
         <canvas width="800px" height="670px" id="canvas"></canvas>
 
@@ -46,9 +55,23 @@
         <div style="display:none;">
             <img
               id="wright"
-              src="./img/Wright-Islands.png"
-              width="758"
-              height="731" />
+              src="./MAPS/Wright-Isles.webp"
+              width="6768"
+              height="6849" />
+          </div>
+          <div style="display:none;">
+            <img
+              id="krakabloa"
+              src="./MAPS/Krakabloa.webp"
+              width="1"
+              height="1" />
+          </div>
+          <div style="display:none;">
+            <img
+              id="skypark"
+              src="./img/SkyPark.png"
+              width="1920"
+              height="1920" />
           </div>
 
         <!-- Icons -->
@@ -63,6 +86,20 @@
             <img
               id="airport"
               src="./img/icons/plane-departure-solid.svg"
+              width="30"
+              height="30" />
+          </div>
+          <div style="display:none;">
+            <img
+              id="ship"
+              src="./img/icons/ship-solid.svg"
+              width="30"
+              height="30" />
+          </div>
+          <div style="display:none;">
+            <img
+              id="anchor"
+              src="./img/icons/anchor-solid.svg"
               width="30"
               height="30" />
           </div>

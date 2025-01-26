@@ -7,9 +7,7 @@ html body {
 }
 
 canvas {
-    width: 75%;
-    height: 100%;
-    background: #21445a;
+    background: #39566a;
     cursor: url(./img/cursor.svg) 15 15, auto;
 }
 
@@ -34,10 +32,7 @@ aside {
 
 .banner {
   width: 90%;
-  height: 47px;
-  background-image: url(./img/SP-logo-big.png);
-  background-repeat: no-repeat;
-  background-size: contain;
+  height: auto;
   margin-top: 20px;
 }
 
@@ -47,7 +42,7 @@ aside {
   text-align: center;
   font-size: 1.2rem;
   margin-top: 7px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .btns {
@@ -115,6 +110,28 @@ aside {
 .fff {
   color: rgb(255, 0, 221)
 }
+
+.credits {
+  display: block;
+  margin-bottom: 10px;
+}
+
+a {
+  color: #07c;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+}
+
+.footer {
+  width: 100%;
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 @media (width <= 800px) {
 

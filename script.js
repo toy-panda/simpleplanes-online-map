@@ -8,24 +8,26 @@ console.log(isMobile);
 if (isMobile == true) {
     ctx.canvas.height = window.innerHeight;
     ctx.canvas.width = window.innerWidth;
+} else {
+    ctx.canvas.height = sidebar.offsetHeight;
+    ctx.canvas.width = window.innerWidth - sidebar.offsetWidth;
 }
 
 const viewportTransform = {
     x: 0,
     y: 0,
-    scale: 1
+    scale: 0.1
 }
 
 // Layers
 let displayAxis = true;
 let displayCoordinates = true;
 let displayAirports = true;
+let displayDocks = true;
+let displayShips = true;
 
 // States
 let isMeasuring = false;
-
-//Multipliers
-const WRIGHT_MULTIPLIER = 19.6111;
 
 //Images import
 const axis = document.getElementById("axis");
@@ -34,14 +36,36 @@ let islands = {
     WrightIsles: {
         img: document.getElementById("wright"),
         scale: {
-            width: 19.6111,
-            height: 19.6111
+            width: 2.34979,
+            height: 2.3369
         },
         offset: {
-            x: -7562,
-            y: -6912
+            x: -13736+6019.41,
+            y: -13163+5594
         }
-    }
+    },
+    Krakabloa: {
+        img: document.getElementById("krakabloa"),
+        scale: {
+            width: 2.3406,
+            height: 2.3446
+        },
+        offset: {
+            x: -13532+26392,
+            y: -9338-53185
+        }
+    },
+    SkyPark: {
+        img: document.getElementById("skypark"),
+        scale: {
+            width: 5.306,
+            height: 5.306
+        },
+        offset: {
+            x: -1372-679,
+            y: -937+31029
+        }
+    },
 }
 
 let icons = {
@@ -52,7 +76,7 @@ let icons = {
             x: 5894,
             y: 4703
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
     },
     NorthRunway : {
@@ -60,10 +84,70 @@ let icons = {
         name: "North Runway",
         position: {
             x: -4449,
-            y: -5480
+            y: -6173
         },
-        color: "#3de15d",
+        color: "#00FF11",
         type: "airport"
+    },
+    BanditAirport : {
+        img: document.getElementById("airport"),
+        name: "Bandit Airport",
+        position: {
+            x: 14416,
+            y: -58625
+        },
+        color: "#00FF11",
+        type: "airport"
+    },
+    YagerAirport : {
+        img: document.getElementById("airport"),
+        name: "Yager Airport",
+        position: {
+            x: 26113,
+            y: -52471
+        },
+        color: "#00FF11",
+        type: "airport"
+    },
+    YagerDock : {
+        img: document.getElementById("anchor"),
+        name: "Water Takeoff",
+        position: {
+            x: 25282,
+            y: -49629
+        },
+        color: "#fc3dff",
+        type: "anchor"
+    },
+    USSTiny : {
+        img: document.getElementById("ship"),
+        name: "USS Tiny",
+        position: {
+            x: -141,
+            y: 6805
+        },
+        color: "rgb(255,212,59)",
+        type: "ship"
+    },
+    USSBeast : {
+        img: document.getElementById("ship"),
+        name: "USS Beast",
+        position: {
+            x: 10128,
+            y: -8260
+        },
+        color: "rgb(255,212,59)",
+        type: "ship"
+    },
+    USSTinyTwo : {
+        img: document.getElementById("ship"),
+        name: "USS Tiny Two",
+        position: {
+            x: 22501,
+            y: -77294
+        },
+        color: "rgb(255,212,59)",
+        type: "ship"
     }
 }
 
@@ -77,10 +161,37 @@ const processMaps = () => {
     });
 }
 
+const proceedPathes = (k) => {
+    // USS Tiny
+    ctx.setLineDash([7/k, 4/k]);
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(59, 160, 255)";
+    ctx.moveTo(icons.USSTiny.position.x, icons.USSTiny.position.y);
+    ctx.lineTo(14510.67, 20418.54);
+    ctx.stroke();
+    // USS Beast
+    ctx.setLineDash([7/k, 4/k]);
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(59, 160, 255)";
+    ctx.moveTo(icons.USSBeast.position.x, icons.USSBeast.position.y);
+    ctx.lineTo(icons.USSBeast.position.x, icons.USSBeast.position.y-20000);
+    ctx.stroke();
+    // USS TinyTow
+    ctx.setLineDash([7/k, 4/k]);
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(59, 160, 255)";
+    ctx.moveTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y);
+    ctx.lineTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y-20000);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
 const processIcons = (k) => {
     if (k < 0.025) {k = 0.025}
     Object.keys(icons).forEach(element => {
         if(displayAirports == false && icons[element].type == "airport") {return;}
+        if(displayShips == false && icons[element].type == "ship") {return;}
+        if(displayDocks == false && icons[element].type == "anchor") {return;}
         ctx.drawImage(icons[element].img, 
             icons[element].position.x - 10/k, 
             icons[element].position.y - 10/k, 
@@ -128,13 +239,14 @@ const render = (e) => {
 
     processMaps();
     if (displayAxis) {drawAxis(viewportTransform.scale);}
+    if (displayShips) {proceedPathes(viewportTransform.scale);}
     processIcons(viewportTransform.scale);
     if (displayCoordinates) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);}
     
     if (!isMobile) {
         if (ctx.canvas.height != sidebar.offsetHeight) {
             ctx.canvas.height = sidebar.offsetHeight;
-            ctx.canvas.width = window.innerWidth * 0.75;
+            ctx.canvas.width = window.innerWidth - sidebar.offsetWidth;
         }
     }
 }
@@ -200,8 +312,6 @@ const onMouseWheel = (e) => {
     updateZooming(e)
 
     render(e)
-
-    //console.log(e)
 }
 
 canvas.addEventListener("wheel", onMouseWheel);
@@ -243,8 +353,41 @@ document.querySelector('#displayCoordinates').addEventListener('click', () => {
     render();
 })
 
+document.querySelector('#displayShips').addEventListener('click', () => {
+    displayShips = !displayShips;
+    render();
+})
+
+document.querySelector('#displayPorts').addEventListener('click', () => {
+    displayDocks = !displayDocks;
+    render();
+})
+
 // Navigation buttons
 
+document.querySelector('#WI').addEventListener('click', (e) => {
+    const centerX = -islands.WrightIsles.offset.x - (islands.WrightIsles.img.naturalWidth * islands.WrightIsles.scale.width)/2;
+    const centerY = -islands.WrightIsles.offset.y - (islands.WrightIsles.img.naturalHeight * islands.WrightIsles.scale.height)/2;
+    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
+    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
+    render(e);
+});
+
+document.querySelector('#KI').addEventListener('click', (e) => {
+    const centerX = -islands.Krakabloa.offset.x - (islands.Krakabloa.img.naturalWidth * islands.Krakabloa.scale.width)/2;
+    const centerY = -islands.Krakabloa.offset.y - (islands.Krakabloa.img.naturalHeight * islands.Krakabloa.scale.height)/2;
+    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
+    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
+    render(e);
+});
+
+document.querySelector('#SC').addEventListener('click', (e) => {
+    const centerX = -islands.SkyPark.offset.x - (islands.SkyPark.img.naturalWidth * islands.SkyPark.scale.width)/2;
+    const centerY = -islands.SkyPark.offset.y - (islands.SkyPark.img.naturalHeight * islands.SkyPark.scale.height)/2;
+    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
+    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
+    render(e);
+});
 
 
 render();
