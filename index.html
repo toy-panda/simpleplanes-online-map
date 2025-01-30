@@ -23,53 +23,56 @@
                 <input type="button" value="Maywar" class="button-7" id="MW" disabled>
             </div>
             
-
-            <div class="check">
-                <input type="checkbox" id="displayCoordinates" checked>
-                <label for="vehicle1"> Display Coordinates</label><br>
+            <div class="layers-wrapper">
+                <div class="check">
+                    <input type="checkbox" id="displayCoordinates" checked>
+                    <label for="vehicle1"> Display Coordinates</label><br>
+                </div>
+                <div class="check">
+                    <input type="checkbox" id="displayAxis" checked>
+                    <label for="vehicle1"> Display Center/Axis</label><br>
+                </div>
+                <div class="check">
+                    <input type="checkbox" id="displayAirports" checked>
+                    <label for="vehicle1"> Display Airfields</label><br>
+                </div>
+                <div class="check">
+                    <input type="checkbox" id="displayDocks" checked>
+                    <label for="vehicle1"> Display Dockyard</label><br>
+                </div>
+                <div class="check">
+                    <input type="checkbox" id="displayShips" checked>
+                    <label for="vehicle1"> Display Ships</label><br>
+                </div>
             </div>
-            <div class="check">
-                <input type="checkbox" id="displayAxis" checked>
-                <label for="vehicle1"> Display Center/Axis</label><br>
-            </div>
-            <div class="check">
-                <input type="checkbox" id="displayAirports" checked>
-                <label for="vehicle1"> Display Airfields</label><br>
-            </div>
-            <div class="check">
-                <input type="checkbox" id="displayPorts" checked>
-                <label for="vehicle1"> Display Dockyard</label><br>
-            </div>
-            <div class="check">
-                <input type="checkbox" id="displayShips" checked>
-                <label for="vehicle1"> Display Ships</label><br>
-            </div>
+            
             <div class="footer">
                 <a href="https://youtu.be/dQw4w9WgXcQ" target="_blank">Forum post for feedback and suggestions</a>
                 <label>(Coming Soon)</label>
             </div>
         </aside>
         <canvas width="800px" height="670px" id="canvas"></canvas>
+        <div id="debug"></div>
 
         <!-- Island Images -->
         <div style="display:none;">
             <img
               id="wright"
-              src="./MAPS/Wright-Isles.webp"
+              src="./img/maps/Wright-Isles.webp"
               width="6768"
               height="6849" />
           </div>
           <div style="display:none;">
             <img
               id="krakabloa"
-              src="./MAPS/Krakabloa.webp"
+              src="./img/maps/Krakabloa.webp"
               width="1"
               height="1" />
           </div>
           <div style="display:none;">
             <img
               id="skypark"
-              src="./img/SkyPark.png"
+              src="./img/maps/SkyPark.png"
               width="1920"
               height="1920" />
           </div>
@@ -104,7 +107,8 @@
               height="30" />
           </div>
 
-
-        <script src="./script.js"></script>
+        <script type="module" src="./modules/islands.js"></script>
+        <script type="module" src="./modules/icons.js"></script>
+        <script type="module" src="./script.js"></script>
     </body>
 </html>

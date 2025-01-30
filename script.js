@@ -2,15 +2,15 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const sidebar = document.querySelector('#sidebar');
 
-let isMobile = window.innerWidth/window.innerHeight < 1 ? true : false;
-console.log(isMobile);
+import { islands } from './modules/islands.js'
+import { icons } from './modules/icons.js'
+
+let isMobile = window.innerWidth < 780;
 
 if (isMobile == true) {
+    sidebar.remove();
     ctx.canvas.height = window.innerHeight;
     ctx.canvas.width = window.innerWidth;
-} else {
-    ctx.canvas.height = sidebar.offsetHeight;
-    ctx.canvas.width = window.innerWidth - sidebar.offsetWidth;
 }
 
 const viewportTransform = {
@@ -19,139 +19,35 @@ const viewportTransform = {
     scale: 0.1
 }
 
-// Layers
-let displayAxis = true;
-let displayCoordinates = true;
-let displayAirports = true;
-let displayDocks = true;
-let displayShips = true;
+let layers = [
+    {
+        name: "displayAxis",
+        type: "axis",
+        enabled: true
+    },
+    {
+        name: "displayCoordinates",
+        type: "coordinates",
+        enabled: true
+    },
+    {
+        name: "displayAirports",
+        type: "airport",
+        enabled: true
+    },
+    {
+        name: "displayDocks",
+        type: "anchor",
+        enabled: true
+    },
+    {
+        name: "displayShips",
+        type: "ship",
+        enabled: true
+    },
+]
 
-// States
-let isMeasuring = false;
-
-//Images import
-const axis = document.getElementById("axis");
-
-let islands = {
-    WrightIsles: {
-        img: document.getElementById("wright"),
-        scale: {
-            width: 2.34979,
-            height: 2.3369
-        },
-        offset: {
-            x: -13736+6019.41,
-            y: -13163+5594
-        }
-    },
-    Krakabloa: {
-        img: document.getElementById("krakabloa"),
-        scale: {
-            width: 2.3406,
-            height: 2.3446
-        },
-        offset: {
-            x: -13532+26392,
-            y: -9338-53185
-        }
-    },
-    SkyPark: {
-        img: document.getElementById("skypark"),
-        scale: {
-            width: 5.306,
-            height: 5.306
-        },
-        offset: {
-            x: -1372-679,
-            y: -937+31029
-        }
-    },
-}
-
-let icons = {
-    WrightAirport : {
-        img: document.getElementById("airport"),
-        name: "Wright Airport",
-        position: {
-            x: 5894,
-            y: 4703
-        },
-        color: "#00FF11",
-        type: "airport"
-    },
-    NorthRunway : {
-        img: document.getElementById("airport"),
-        name: "North Runway",
-        position: {
-            x: -4449,
-            y: -6173
-        },
-        color: "#00FF11",
-        type: "airport"
-    },
-    BanditAirport : {
-        img: document.getElementById("airport"),
-        name: "Bandit Airport",
-        position: {
-            x: 14416,
-            y: -58625
-        },
-        color: "#00FF11",
-        type: "airport"
-    },
-    YagerAirport : {
-        img: document.getElementById("airport"),
-        name: "Yager Airport",
-        position: {
-            x: 26113,
-            y: -52471
-        },
-        color: "#00FF11",
-        type: "airport"
-    },
-    YagerDock : {
-        img: document.getElementById("anchor"),
-        name: "Water Takeoff",
-        position: {
-            x: 25282,
-            y: -49629
-        },
-        color: "#fc3dff",
-        type: "anchor"
-    },
-    USSTiny : {
-        img: document.getElementById("ship"),
-        name: "USS Tiny",
-        position: {
-            x: -141,
-            y: 6805
-        },
-        color: "rgb(255,212,59)",
-        type: "ship"
-    },
-    USSBeast : {
-        img: document.getElementById("ship"),
-        name: "USS Beast",
-        position: {
-            x: 10128,
-            y: -8260
-        },
-        color: "rgb(255,212,59)",
-        type: "ship"
-    },
-    USSTinyTwo : {
-        img: document.getElementById("ship"),
-        name: "USS Tiny Two",
-        position: {
-            x: 22501,
-            y: -77294
-        },
-        color: "rgb(255,212,59)",
-        type: "ship"
-    }
-}
-
-const processMaps = () => {
+const drawMaps = () => {
     Object.keys(islands).forEach(element => {
         ctx.drawImage(islands[element].img, 
             islands[element].offset.x,
@@ -161,7 +57,7 @@ const processMaps = () => {
     });
 }
 
-const proceedPathes = (k) => {
+const drawPathes = (k) => {
     // USS Tiny
     ctx.setLineDash([7/k, 4/k]);
     ctx.beginPath();
@@ -169,6 +65,7 @@ const proceedPathes = (k) => {
     ctx.moveTo(icons.USSTiny.position.x, icons.USSTiny.position.y);
     ctx.lineTo(14510.67, 20418.54);
     ctx.stroke();
+
     // USS Beast
     ctx.setLineDash([7/k, 4/k]);
     ctx.beginPath();
@@ -176,6 +73,7 @@ const proceedPathes = (k) => {
     ctx.moveTo(icons.USSBeast.position.x, icons.USSBeast.position.y);
     ctx.lineTo(icons.USSBeast.position.x, icons.USSBeast.position.y-20000);
     ctx.stroke();
+
     // USS TinyTow
     ctx.setLineDash([7/k, 4/k]);
     ctx.beginPath();
@@ -183,15 +81,20 @@ const proceedPathes = (k) => {
     ctx.moveTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y);
     ctx.lineTo(icons.USSTinyTwo.position.x, icons.USSTinyTwo.position.y-20000);
     ctx.stroke();
+
     ctx.setLineDash([]);
 }
 
-const processIcons = (k) => {
+const drawIcons = (k) => {
     if (k < 0.025) {k = 0.025}
     Object.keys(icons).forEach(element => {
-        if(displayAirports == false && icons[element].type == "airport") {return;}
-        if(displayShips == false && icons[element].type == "ship") {return;}
-        if(displayDocks == false && icons[element].type == "anchor") {return;}
+
+        for (let i = 0; i < layers.length; i++) {
+            if (layers[i].type == icons[element].type && (layers[i].enabled == false)) {
+                return;
+            }
+        }
+
         ctx.drawImage(icons[element].img, 
             icons[element].position.x - 10/k, 
             icons[element].position.y - 10/k, 
@@ -212,6 +115,7 @@ const processIcons = (k) => {
 }
 
 const drawAxis = (k) => {
+    const axis = document.getElementById("axis");
     if (k < 0.025) {k = 0.025}
     ctx.drawImage(axis, 
         0, 
@@ -237,11 +141,11 @@ const render = (e) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(viewportTransform.scale, 0, 0, viewportTransform.scale, viewportTransform.x, viewportTransform.y);
 
-    processMaps();
-    if (displayAxis) {drawAxis(viewportTransform.scale);}
-    if (displayShips) {proceedPathes(viewportTransform.scale);}
-    processIcons(viewportTransform.scale);
-    if (displayCoordinates) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);}
+    drawMaps();
+    if (layers[0].enabled) {drawAxis(viewportTransform.scale);}
+    if (layers[4].enabled) {drawPathes(viewportTransform.scale);}
+    drawIcons(viewportTransform.scale);
+    if (layers[1].enabled) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);}
     
     if (!isMobile) {
         if (ctx.canvas.height != sidebar.offsetHeight) {
@@ -301,16 +205,50 @@ const updateZooming = (e) => {
     
 }
 
+const updateZoomingMobile = (targetX,targetY,d) => {
+
+    const oldX = viewportTransform.x;
+    const oldY = viewportTransform.y;
+
+    const localX = targetX;
+    const localY = targetY;
+
+    const previousScale = viewportTransform.scale;
+    const newScaleX = viewportTransform.scale + d * -0.01
+
+    if (previousScale <= 0.01) {
+        if (newScaleX-previousScale < 0) { return; }
+    }
+
+    if (previousScale >= 5) {
+        if (newScaleX-previousScale > 0) { return; }
+    }
+
+    let delta = d;
+
+    if (newScaleX-previousScale < 1) {
+        delta = delta * viewportTransform.scale;
+    }
+    
+    const newScale = viewportTransform.scale += delta * -0.01;
+
+    const newX = localX - (localX - oldX) * (newScale / previousScale);
+    const newY = localY - (localY - oldY) * (newScale / previousScale);
+
+    viewportTransform.x = newX;
+    viewportTransform.y = newY;
+    viewportTransform.scale = newScale;
+}
+
+// DESKTOP EVENTS
+
 const onMouseMove = (e) => {
     updatePanning(e)
-
     render(e);
-
 }
 
 const onMouseWheel = (e) => {
     updateZooming(e)
-
     render(e)
 }
 
@@ -319,7 +257,6 @@ canvas.addEventListener("wheel", onMouseWheel);
 canvas.addEventListener("mousedown", (e) => {
     previousX = e.clientX;
     previousY = e.clientY;
-
     canvas.addEventListener("mousemove", onMouseMove);
 })
 
@@ -336,58 +273,79 @@ canvas.addEventListener('click', (e) => {
 })
 
 
-// Layers
+// MOBILE EVENTS
 
-document.querySelector('#displayAxis').addEventListener('click', () => {
-    displayAxis = !displayAxis;
-    render();
-})
-
-document.querySelector('#displayAirports').addEventListener('click', () => {
-    displayAirports = !displayAirports;
-    render();
-})
-
-document.querySelector('#displayCoordinates').addEventListener('click', () => {
-    displayCoordinates = !displayCoordinates;
-    render();
-})
-
-document.querySelector('#displayShips').addEventListener('click', () => {
-    displayShips = !displayShips;
-    render();
-})
-
-document.querySelector('#displayPorts').addEventListener('click', () => {
-    displayDocks = !displayDocks;
-    render();
-})
-
-// Navigation buttons
-
-document.querySelector('#WI').addEventListener('click', (e) => {
-    const centerX = -islands.WrightIsles.offset.x - (islands.WrightIsles.img.naturalWidth * islands.WrightIsles.scale.width)/2;
-    const centerY = -islands.WrightIsles.offset.y - (islands.WrightIsles.img.naturalHeight * islands.WrightIsles.scale.height)/2;
-    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
-    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
-    render(e);
+canvas.addEventListener('touchstart', (e) => {
+    previousX = e.touches[0].clientX;
+    previousY = e.touches[0].clientY;
+    canvas.addEventListener('touchmove', onTouchMove);
 });
 
-document.querySelector('#KI').addEventListener('click', (e) => {
-    const centerX = -islands.Krakabloa.offset.x - (islands.Krakabloa.img.naturalWidth * islands.Krakabloa.scale.width)/2;
-    const centerY = -islands.Krakabloa.offset.y - (islands.Krakabloa.img.naturalHeight * islands.Krakabloa.scale.height)/2;
-    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
-    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
-    render(e);
+canvas.addEventListener('touchend', (e) => {
+    //render(e);
+    canvas.removeEventListener("mousemove", onTouchMove);
 });
 
-document.querySelector('#SC').addEventListener('click', (e) => {
-    const centerX = -islands.SkyPark.offset.x - (islands.SkyPark.img.naturalWidth * islands.SkyPark.scale.width)/2;
-    const centerY = -islands.SkyPark.offset.y - (islands.SkyPark.img.naturalHeight * islands.SkyPark.scale.height)/2;
-    viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
-    viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
-    render(e);
-});
+let prevDist = 0;
+const debug = document.querySelector('#debug');
 
+const onTouchMove = (e) => {
+    console.log(e);
+    if (e.touches.length == 2) {
+        e.preventDefault();
+        const midX = e.touches[0].clientX - e.touches[1].clientX;
+        const midY = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY);
+        let diff = prevDist - dist;
+        if (diff >= 2) { diff = 2 }
+        if (diff <= -2) { diff = -2 }
+        debug.innerHTML=diff;
+        prevDist = dist;
+        updateZoomingMobile(e.touches[0].clientX, e.touches[0].clientY, diff)
+        render(e);
+        return;
+    }
+
+    //  debug.innerHTML = `${viewportTransform.x - (window.innerWidth / viewportTransform.scale)/2}<br>
+    //  ${viewportTransform.y - (window.innerHeight / viewportTransform.scale)/2}`
+
+    // debug.innerHTML = `${viewportTransform.x}<br>
+    // ${viewportTransform.y}`
+
+    updatePanning(e.touches[0]);
+    render(e.touches[0]);
+}
+
+
+// Layers checkbox handler
+document.querySelector(".layers-wrapper").addEventListener('click', (e) => {
+    const isButton = e.target.nodeName === 'INPUT';
+    if (!isButton) { return; }
+    console.log(1)
+    layers.forEach(element => {
+        if (element.name == e.target.id) {
+            element.enabled = !element.enabled;
+        }
+    });
+    render(e);
+})
+
+// Navigation buttons handler
+document.querySelector('.btns').addEventListener('click', (e) => {
+    const isButton = e.target.nodeName === 'INPUT';
+    if (!isButton) { return; }
+    Object.keys(islands).forEach(element => {
+        if (islands[element].name == e.target.value) {
+            const targetIsland = islands[element];
+            const centerX = -targetIsland.offset.x - (targetIsland.img.naturalWidth * targetIsland.scale.width)/2;
+            const centerY = -targetIsland.offset.y - (targetIsland.img.naturalHeight * targetIsland.scale.height)/2;
+            viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
+            viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
+            render(e);
+        }
+    });
+})
 
 render();
