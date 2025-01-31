@@ -8,7 +8,6 @@ import { icons } from './modules/icons.js'
 let isMobile = window.innerWidth < 780;
 
 if (isMobile == true) {
-    sidebar.remove();
     ctx.canvas.height = window.innerHeight;
     ctx.canvas.width = window.innerWidth;
 }
@@ -136,6 +135,16 @@ const drawCoordinates = (xpos, ypos, k) => {
     ctx.fillText(`Y: ${Math.round(-ypos/k)}`, (xpos+10)/k, (ypos-20)/k);
 }
 
+const drawPointer = (xpos, ypos, k) => {
+    const pointer = document.getElementById("pointer");
+    ctx.drawImage(pointer, 
+        (xpos-25)/k, 
+        (ypos-25)/k, 
+        50/k, 
+        50/k);
+
+}
+
 const render = (e) => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -153,12 +162,17 @@ const render = (e) => {
             ctx.canvas.width = window.innerWidth - sidebar.offsetWidth;
         }
     }
+
+    if (isMobile) {
+        drawPointer(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);
+    }
 }
 
-// We need to keep track of our previous mouse position for later
+
 let previousX = 0, previousY = 0;
 
 const updatePanning = (e) => {
+    if (Date.now() - lastTouchmove <= 100) {return;}
     const localX = e.clientX;
     const localY = e.clientY;
 
@@ -240,10 +254,10 @@ const updateZoomingMobile = (targetX,targetY,d) => {
     viewportTransform.scale = newScale;
 }
 
-// DESKTOP EVENTS
+/* ================= Desktop events ================= */
 
 const onMouseMove = (e) => {
-    updatePanning(e)
+    updatePanning(e);
     render(e);
 }
 
@@ -273,7 +287,7 @@ canvas.addEventListener('click', (e) => {
 })
 
 
-// MOBILE EVENTS
+/* ================= Mobile events ================= */
 
 canvas.addEventListener('touchstart', (e) => {
     previousX = e.touches[0].clientX;
@@ -282,38 +296,32 @@ canvas.addEventListener('touchstart', (e) => {
 });
 
 canvas.addEventListener('touchend', (e) => {
-    //render(e);
     canvas.removeEventListener("mousemove", onTouchMove);
 });
 
 let prevDist = 0;
 const debug = document.querySelector('#debug');
 
+let lastTouchmove;
+
 const onTouchMove = (e) => {
     console.log(e);
     if (e.touches.length == 2) {
         e.preventDefault();
-        const midX = e.touches[0].clientX - e.touches[1].clientX;
-        const midY = e.touches[0].clientY - e.touches[1].clientY;
+        const midX = (e.touches[0].clientX + e.touches[1].clientX)/2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY)/2;
         const dist = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY);
         let diff = prevDist - dist;
-        if (diff >= 2) { diff = 2 }
-        if (diff <= -2) { diff = -2 }
-        debug.innerHTML=diff;
+        if (diff >= 5) { diff = 5 }
+        if (diff <= -5) { diff = -5 }
         prevDist = dist;
-        updateZoomingMobile(e.touches[0].clientX, e.touches[0].clientY, diff)
+        updateZoomingMobile(midX, midY, diff);
+        lastTouchmove = Date.now();
         render(e);
         return;
     }
-
-    //  debug.innerHTML = `${viewportTransform.x - (window.innerWidth / viewportTransform.scale)/2}<br>
-    //  ${viewportTransform.y - (window.innerHeight / viewportTransform.scale)/2}`
-
-    // debug.innerHTML = `${viewportTransform.x}<br>
-    // ${viewportTransform.y}`
-
     updatePanning(e.touches[0]);
     render(e.touches[0]);
 }
@@ -346,6 +354,15 @@ document.querySelector('.btns').addEventListener('click', (e) => {
             render(e);
         }
     });
+})
+
+
+document.querySelector("#menu-mobile").addEventListener('click', () => {
+    sidebar.style.width = "100%";
+})
+  
+document.querySelector(".close-menu").addEventListener('click', () => {
+    sidebar.style.width = "0";
 })
 
 render();
