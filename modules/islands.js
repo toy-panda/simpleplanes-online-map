@@ -26,13 +26,25 @@ export const islands = {
     SkyPark: {
         img: document.getElementById("skypark"),
         scale: {
-            width: 5.306,
-            height: 5.306
+            width: 2.344245,
+            height: 2.33930
         },
         offset: {
-            x: -1372-679,
-            y: -937+31029
+            x: -1431-679,
+            y: -986+31029
         },
         name: "SkyPark City"
+    },
+    Snowstone: {
+        img: document.getElementById("snowstone"),
+        scale: {
+            width: 2.32647,
+            height: 2.354016
+        },
+        offset: {
+            x: -10693+5581,
+            y: -1249-141011
+        },
+        name: "Snowstone"
     },
 }

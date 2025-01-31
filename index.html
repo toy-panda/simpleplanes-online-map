@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SimplePlanes Interactive Map</title>
+        <title>SimplePlanes Map</title>
         <link rel="shortcut icon" href="./img/SP-logo.png" type="image/x-icon">
         <link rel="stylesheet" href="./style.css">
     </head>
@@ -11,14 +11,13 @@
         <aside id="sidebar">
             <div class="banner-wrapper">
                 <img src="./img/SP-logo-big.png" alt="" class="banner">
-                <span class="subhead">Interactive Map</span>
-                <label class="credits">by <a href="https://www.simpleplanes.com/u/rimiha" target="_blank">u/rimiha</a></label>
+                <label class="credits">Interactive map by <a href="https://www.simpleplanes.com/u/rimiha" target="_blank">u/rimiha</a></label>
             </div>
 
             <div class="btns">
                 <input type="button" value="Wright Isles" class="button-7" id="WI">
                 <input type="button" value="Krakabloa" class="button-7" id="KI">
-                <input type="button" value="Snowstone" class="button-7" id="AVA" disabled>
+                <input type="button" value="Snowstone" class="button-7" id="AVA">
                 <input type="button" value="SkyPark City" class="button-7" id="SC">
                 <input type="button" value="Maywar" class="button-7" id="MW" disabled>
             </div>
@@ -34,11 +33,11 @@
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayAirports" checked>
-                    <label for="vehicle1"> Display Airfields</label><br>
+                    <label for="vehicle1"> Display Airports</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayDocks" checked>
-                    <label for="vehicle1"> Display Dockyard</label><br>
+                    <label for="vehicle1"> Display Docks</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayShips" checked>
@@ -72,9 +71,16 @@
           <div style="display:none;">
             <img
               id="skypark"
-              src="./img/maps/SkyPark.png"
-              width="1920"
-              height="1920" />
+              src="./img/maps/Skypark-HQ.webp"
+              width="1207"
+              height="1193" />
+          </div>
+          <div style="display:none;">
+            <img
+              id="snowstone"
+              src="./img/maps/Snowstone-HQ.webp"
+              width="6135"
+              height="6152" />
           </div>
 
         <!-- Icons -->

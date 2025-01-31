@@ -39,6 +39,26 @@ export const icons = {
         color: "#00FF11",
         type: "airport"
     },
+    AvalancheAirport : {
+        img: document.getElementById("airport"),
+        name: "Avalanche Airport",
+        position: {
+            x: 6349,
+            y: -140846
+        },
+        color: "#00FF11",
+        type: "airport"
+    },
+    IceBase : {
+        img: document.getElementById("airport"),
+        name: "Ice Base",
+        position: {
+            x: 4228,
+            y: -130929
+        },
+        color: "#00FF11",
+        type: "airport"
+    },
     YagerDock : {
         img: document.getElementById("anchor"),
         name: "Water Takeoff",
@@ -46,7 +66,17 @@ export const icons = {
             x: 25282,
             y: -49629
         },
-        color: "#fc3dff",
+        color: "#ff5ae9",
+        type: "anchor"
+    },
+    UndermountainDock : {
+        img: document.getElementById("anchor"),
+        name: "Undermountain Docking Bay",
+        position: {
+            x: 4312,
+            y: -131642
+        },
+        color: "#ff5ae9",
         type: "anchor"
     },
     USSTiny : {

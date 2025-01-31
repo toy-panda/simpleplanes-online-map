@@ -9,7 +9,7 @@ html body {
 canvas {
     width: 75%;
     height: 100%;
-    background: #39566a;
+    background: #3f617b;
     cursor: url(./img/cursor.svg) 15 15, auto;
 }
 
@@ -110,12 +110,15 @@ aside {
 }
 
 .fff {
-  color: rgb(255, 0, 221)
+  color: #ff5ae9
 }
 
 .credits {
   display: block;
+  font-size: 0.9rem;
+  margin-top: 5px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 a {
