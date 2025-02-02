@@ -150,6 +150,11 @@ a {
   text-align: center;
 }
 
+.footer a {
+  display: block;
+  margin: 5px 0 5px 0;
+}
+
 #debug {
   position: absolute;
   bottom: 10px;

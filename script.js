@@ -44,10 +44,18 @@ let layers = [
         type: "ship",
         enabled: true
     },
+    {
+        name: "displayDesktop",
+        //type: "ship",
+        enabled: true
+    },
 ]
 
 const drawMaps = () => {
     Object.keys(islands).forEach(element => {
+        if (layers[5].enabled == false) {
+            if (islands[element].desktopOnly == true) {return;}
+        }
         ctx.drawImage(islands[element].img, 
             islands[element].offset.x,
             islands[element].offset.y,
@@ -85,15 +93,19 @@ const drawPathes = (k) => {
 }
 
 const drawIcons = (k) => {
-    if (k < 0.025) {k = 0.025}
     Object.keys(icons).forEach(element => {
-
         for (let i = 0; i < layers.length; i++) {
             if (layers[i].type == icons[element].type && (layers[i].enabled == false)) {
                 return;
             }
         }
-
+        if (layers[5].enabled == false) {
+            if (icons[element].desktopOnly == true) {return;}
+        }
+        if (icons[element].type != "kraken" && icons[element].type != "brownPearl") {
+            if (k < 0.025) {k = 0.025}
+            console.log(icons[element].type)
+        }
         ctx.drawImage(icons[element].img, 
             icons[element].position.x - 10/k, 
             icons[element].position.y - 10/k, 
@@ -148,6 +160,8 @@ const drawPointer = (xpos, ypos, k) => {
 const render = (e) => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (viewportTransform.scale > 5) {viewportTransform.scale = 5}
+    if (viewportTransform.scale < 0.01) {viewportTransform.scale = 0.01}
     ctx.setTransform(viewportTransform.scale, 0, 0, viewportTransform.scale, viewportTransform.x, viewportTransform.y);
 
     drawMaps();
@@ -337,6 +351,8 @@ document.querySelector(".layers-wrapper").addEventListener('click', (e) => {
             element.enabled = !element.enabled;
         }
     });
+    document.querySelector("#MW").disabled = !layers[5].enabled;
+    document.querySelector("#KR").disabled = !layers[5].enabled;
     render(e);
 })
 
@@ -349,6 +365,16 @@ document.querySelector('.btns').addEventListener('click', (e) => {
             const targetIsland = islands[element];
             const centerX = -targetIsland.offset.x - (targetIsland.img.naturalWidth * targetIsland.scale.width)/2;
             const centerY = -targetIsland.offset.y - (targetIsland.img.naturalHeight * targetIsland.scale.height)/2;
+            viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
+            viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
+            render(e);
+        }
+    });
+    Object.keys(icons).forEach(element => {
+        if (icons[element].name == e.target.value) {
+            const targetIsland = icons[element];
+            const centerX = -targetIsland.position.x;
+            const centerY = -targetIsland.position.y;
             viewportTransform.x = centerX * viewportTransform.scale + ctx.canvas.width/2;
             viewportTransform.y = centerY * viewportTransform.scale + ctx.canvas.height/2;
             render(e);
