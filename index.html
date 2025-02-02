@@ -9,49 +9,59 @@
     </head>
     <body>
         <aside id="sidebar">
-            <div class="banner-wrapper">
-                <img src="./img/SP-logo-big.png" alt="" class="banner">
-                <label class="credits">Interactive map by <a href="https://www.simpleplanes.com/u/rimiha" target="_blank">u/rimiha</a></label>
+            <div class="header">
+                <div class="banner-wrapper">
+                    <img src="./img/SP-logo-big.png" alt="" class="banner">
+                    <label class="credits">Interactive map by <a href="https://www.simpleplanes.com/u/rimiha" target="_blank">u/rimiha</a></label>
+                </div>
+                <img src="./img/xmark-solid.svg" class="close-menu">
             </div>
+            
 
+            <span class="block-header">Navigation</span>
             <div class="btns">
                 <input type="button" value="Wright Isles" class="button-7" id="WI">
                 <input type="button" value="Krakabloa" class="button-7" id="KI">
                 <input type="button" value="Snowstone" class="button-7" id="AVA">
                 <input type="button" value="SkyPark City" class="button-7" id="SC">
                 <input type="button" value="Maywar" class="button-7" id="MW" disabled>
+                <input type="button" value="Black Pearl" class="button-7" id="BP" disabled>
+                <input type="button" value="Kraken" class="button-7" id="KR" disabled>
             </div>
             
+            <span class="block-header">Settings</span>
             <div class="layers-wrapper">
                 <div class="check">
                     <input type="checkbox" id="displayCoordinates" checked>
-                    <label for="vehicle1"> Display Coordinates</label><br>
+                    <label for="vehicle1"> Show Coordinates</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayAxis" checked>
-                    <label for="vehicle1"> Display Center/Axis</label><br>
+                    <label for="vehicle1"> Show Origin</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayAirports" checked>
-                    <label for="vehicle1"> Display Airports</label><br>
+                    <label for="vehicle1"> Show Airports</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayDocks" checked>
-                    <label for="vehicle1"> Display Docks</label><br>
+                    <label for="vehicle1"> Show Docks</label><br>
                 </div>
                 <div class="check">
                     <input type="checkbox" id="displayShips" checked>
-                    <label for="vehicle1"> Display Ships</label><br>
+                    <label for="vehicle1"> Show Ships</label><br>
                 </div>
             </div>
             
+            
             <div class="footer">
-                <a href="https://youtu.be/dQw4w9WgXcQ" target="_blank">Forum post for feedback and suggestions</a>
-                <label>(Coming Soon)</label>
+                <a href="https://www.simpleplanes.com/Forums/View/2049353/RELEASE-SimplePlanes-Map" target="_blank">Forum post for feedback and suggestions</a>
             </div>
         </aside>
         <canvas width="800px" height="670px" id="canvas"></canvas>
         <div id="debug"></div>
+        <!-- <div id="menu-mobile"></div> -->
+        <img src="./img/bars-solid.svg" id="menu-mobile">
 
         <!-- Island Images -->
         <div style="display:none;">
@@ -109,6 +119,14 @@
             <img
               id="anchor"
               src="./img/icons/anchor-solid.svg"
+              width="30"
+              height="30" />
+          </div>
+
+          <div style="display:none;">
+            <img
+              id="pointer"
+              src="./img/cursor.svg"
               width="30"
               height="30" />
           </div>
