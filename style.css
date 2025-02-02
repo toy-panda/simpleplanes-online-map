@@ -150,9 +150,13 @@ a {
   text-align: center;
 }
 
-.footer a {
+.footer a{
   display: block;
   margin: 5px 0 5px 0;
+}
+
+.footer a img {
+  width: 95%;
 }
 
 #debug {
