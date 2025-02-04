@@ -66,8 +66,32 @@
         </aside>
         <canvas width="800px" height="670px" id="canvas"></canvas>
         <div id="debug"></div>
-        <!-- <div id="menu-mobile"></div> -->
-        <img src="./img/bars-solid.svg" id="menu-mobile">
+
+        <div class="toolbar">
+          <img src="./img/bars-solid.svg" id="menu-mobile">
+          <img src="./img/icons/compass-drafting-solid.svg" id="draw-path" title="Path Builder">
+          <img src="./img/icons/ruler-solid.svg" id="draw-measure" title="Ruler">
+        </div>
+        <div class="pathBuilder">
+          <span>Path Builder</span>
+          <div class="output" id="pathOutput">
+            Add points by clicking on the map
+          </div>
+          <div class="dialogButtons">
+            <input type="button" class="button-7" value="Undo" id="undo-path">
+            <input type="button" class="button-7 copy-btn" value="Copy" id="copy-path">
+            <input type="button" class="button-7 clear-btn" value="Clear" id="clear-path">
+          </div>
+        </div>
+        <div class="measureBuilder">
+          <span>Measure</span>
+          <div class="output" id="measureOutput">
+            Put the START point on the map
+          </div>
+          <div class="dialogButtons">
+            <input type="button" class="button-7 clear-btn" value="Clear" id="clear-measure">
+          </div>
+        </div>
 
         <!-- Island Images -->
         <div style="display:none;">
