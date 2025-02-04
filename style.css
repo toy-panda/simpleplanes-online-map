@@ -150,6 +150,15 @@ a {
   text-align: center;
 }
 
+.footer a{
+  display: block;
+  margin: 5px 0 5px 0;
+}
+
+.footer a img {
+  width: 95%;
+}
+
 #debug {
   position: absolute;
   bottom: 10px;

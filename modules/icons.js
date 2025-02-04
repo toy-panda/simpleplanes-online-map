@@ -1,4 +1,25 @@
 export const icons = {
+    BlackPearl : {
+        img: document.getElementById("brownPearl"),
+        name: "Brown Pearl",
+        position: {
+            x: -125000,
+            y: 50000
+        },
+        color: "rgb(255,46,46)",
+        type: "brownPearl"
+    },
+    Kraken : {
+        img: document.getElementById("kraken"),
+        name: "Kraken",
+        position: {
+            x: 97916,
+            y: -74788
+        },
+        color: "rgb(255,46,46)",
+        type: "kraken",
+        desktopOnly: true
+    },
     WrightAirport : {
         img: document.getElementById("airport"),
         name: "Wright Airport",
@@ -59,6 +80,17 @@ export const icons = {
         color: "#00FF11",
         type: "airport"
     },
+    MaywarTakeoff : {
+        img: document.getElementById("airport"),
+        name: "Maywar Takeoff",
+        position: {
+            x: 76747,
+            y: 32122
+        },
+        color: "#00FF11",
+        type: "airport",
+        desktopOnly: true
+    },
     YagerDock : {
         img: document.getElementById("anchor"),
         name: "Water Takeoff",
@@ -78,6 +110,17 @@ export const icons = {
         },
         color: "#ff5ae9",
         type: "anchor"
+    },
+   MaywarWaterTakeoff : {
+        img: document.getElementById("anchor"),
+        name: "Maywar Water Takeoff",
+        position: {
+            x: 75756,
+            y: 33406
+        },
+        color: "#ff5ae9",
+        type: "anchor",
+        desktopOnly: true
     },
     USSTiny : {
         img: document.getElementById("ship"),
