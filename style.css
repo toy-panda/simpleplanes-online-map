@@ -121,7 +121,7 @@ aside {
 }
 
 .fff {
-  color: #ff5ae9
+  color: #ffffff
 }
 
 .credits {
@@ -167,12 +167,109 @@ a {
   z-index: 1000;
 }
 
-#menu-mobile {
+.close-menu {
   display: none;
 }
 
-.close-menu {
+.toolbar {
+  position: absolute;
+  display: block;
+  width: fit-content;
+  height: fit-content;
+  top: 10px;
+  right: calc(25% + 10px);
+}
+
+.toolbar img {
+    display: block;
+    width: 60px;
+    height: 55px;
+    background-color: rgba(236, 236, 236, 0.328);
+    opacity: 0.5;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.toolbar #menu-mobile {
   display: none;
+}
+
+.pathBuilder,
+.measureBuilder {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 300px;
+  min-height: 100px;
+  /* outline: 1px red solid; */
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.pathBuilder span,
+.measureBuilder span {
+  color: rgba(255, 255, 255, 0.782);
+  font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+  font-weight:600;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.pathBuilder .output,
+.measureBuilder .output {
+  width: calc(100%-10px);
+  min-height: 120px;
+  background-color: rgba(255, 255, 255, 0.183);
+  border-radius: 5px;
+  border: 0px;
+  color: white;
+  font-family: monospace;
+  padding: 5px;
+  overflow-y: scroll;
+  margin-bottom: 5px;
+  line-height: 1.1rem;
+}
+
+.pathBuilder .dialogButtons,
+.measureBuilder .dialogButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.pathBuilder .clear-btn,
+.measureBuilder .clear-btn {
+  background-color: #f94b4b;
+}
+
+.pathBuilder .clear-btn:hover,
+.pathBuilder .clear-btn:focus,
+.measureBuilder .clear-btn:hover,
+.measureBuilder .clear-btn:focus {
+  background-color: rgb(205, 60, 60);
+}
+  
+.pathBuilder .clear-btn:active,
+.measureBuilder .clear-btn:active {
+  background-color: #c61313;
+  box-shadow: none;
+}
+
+.pathBuilder .copy-btn {
+  background-color: #39c46a;
+}
+
+.pathBuilder .copy-btn:hover,
+.pathBuilder .copy-btn:focus {
+  background-color: #2fa458;
+}
+  
+.pathBuilder .copy-btn:active {
+  background-color: #21773f;
+  box-shadow: none;
 }
 
 
@@ -212,16 +309,18 @@ a {
     font-size: calc(80%);
   }
 
-  #menu-mobile {
-    position: absolute;
-    display: block;
-    width: 60px;
-    height: 55px;
-    top: 10px;
+  .toolbar {
     right: 10px;
-    background-color: rgba(236, 236, 236, 0.328);
-    opacity: 0.5;
-    border-radius: 5px;
+  }
+
+  .toolbar #menu-mobile {
+    display: block;
+  }
+
+  .pathBuilder .output {
+    max-height: 150px;
+    overflow-y: scroll;
+    border: 0px solid white;
   }
 
   .close-menu {
@@ -230,3 +329,4 @@ a {
     height: 50px;
   }
 }
+

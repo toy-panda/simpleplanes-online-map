@@ -51,6 +51,8 @@ let layers = [
     },
 ]
 
+let path = []
+
 const drawMaps = () => {
     Object.keys(islands).forEach(element => {
         if (layers[5].enabled == false) {
@@ -64,7 +66,7 @@ const drawMaps = () => {
     });
 }
 
-const drawPathes = (k) => {
+const drawShipPath = (k) => {
     // USS Tiny
     ctx.setLineDash([7/k, 4/k]);
     ctx.beginPath();
@@ -104,7 +106,7 @@ const drawIcons = (k) => {
         }
         if (icons[element].type != "kraken" && icons[element].type != "brownPearl") {
             if (k < 0.025) {k = 0.025}
-            console.log(icons[element].type)
+            //console.log(icons[element].type)
         }
         ctx.drawImage(icons[element].img, 
             icons[element].position.x - 10/k, 
@@ -166,10 +168,12 @@ const render = (e) => {
 
     drawMaps();
     if (layers[0].enabled) {drawAxis(viewportTransform.scale);}
-    if (layers[4].enabled) {drawPathes(viewportTransform.scale);}
+    if (layers[4].enabled) {drawShipPath(viewportTransform.scale);}
     drawIcons(viewportTransform.scale);
+    drawPath();
+    drawMeasure();
     if (layers[1].enabled) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);}
-    
+
     if (!isMobile) {
         if (ctx.canvas.height != sidebar.offsetHeight) {
             ctx.canvas.height = sidebar.offsetHeight;
@@ -285,10 +289,21 @@ canvas.addEventListener("wheel", onMouseWheel);
 canvas.addEventListener("mousedown", (e) => {
     previousX = e.clientX;
     previousY = e.clientY;
+    if (drawPathMode == true || drawMeasureMode == true) { touchStartRecord = Date.now(); }
     canvas.addEventListener("mousemove", onMouseMove);
 })
 
 canvas.addEventListener("mouseup", (e) => {
+    if (drawPathMode == true) { 
+        if (Date.now() - touchStartRecord <= 200) {
+            addPointToPath(e);
+        }
+    }
+    if (drawMeasureMode == true) { 
+        if (Date.now() - touchStartRecord <= 200) {
+            addPointToMeasure(e);
+        }
+    }
     canvas.removeEventListener("mousemove", onMouseMove);
 })
 
@@ -319,7 +334,7 @@ const debug = document.querySelector('#debug');
 let lastTouchmove;
 
 const onTouchMove = (e) => {
-    console.log(e);
+    //console.log(e);
     if (e.touches.length == 2) {
         e.preventDefault();
         const midX = (e.touches[0].clientX + e.touches[1].clientX)/2;
@@ -345,7 +360,7 @@ const onTouchMove = (e) => {
 document.querySelector(".layers-wrapper").addEventListener('click', (e) => {
     const isButton = e.target.nodeName === 'INPUT';
     if (!isButton) { return; }
-    console.log(1)
+    //console.log(1)
     layers.forEach(element => {
         if (element.name == e.target.id) {
             element.enabled = !element.enabled;
@@ -390,5 +405,200 @@ document.querySelector("#menu-mobile").addEventListener('click', () => {
 document.querySelector(".close-menu").addEventListener('click', () => {
     sidebar.style.width = "0";
 })
+
+/* ================= Tools: Path Builder ================= */
+
+let drawPathMode = false;
+let touchStartRecord = 0;
+
+document.querySelector("#draw-path").addEventListener('click', () => {
+    const measureBuilderWindow = document.querySelector(".measureBuilder");
+    measureBuilderWindow.style.display = "none";
+    document.querySelector("#draw-measure").style.opacity = 0.5;
+    document.querySelector("#draw-measure").style.outline = "0px solid white";
+    drawMeasureMode = false;
+
+    const dialogWindow = document.querySelector(".pathBuilder");
+    if (dialogWindow.style.display == "none" || dialogWindow.style.display == "") {
+        dialogWindow.style.display = "flex";
+        document.querySelector("#draw-path").style.opacity = 1;
+        document.querySelector("#draw-path").style.outline = "2px solid white";
+        drawPathMode = true;
+    } else if (dialogWindow.style.display == "flex") {
+        dialogWindow.style.display = "none";
+        document.querySelector("#draw-path").style.opacity = 0.5;
+        document.querySelector("#draw-path").style.outline = "0px solid white";
+        drawPathMode = false;
+    }
+})
+
+document.querySelector("#undo-path").addEventListener('click', (e) => {
+    path.pop();
+    document.querySelector("#pathOutput").innerHTML = ""
+    path.forEach(element => {
+        document.querySelector("#pathOutput").innerHTML += `[${path.indexOf(element)+1}] X: ${element.x}, Y: ${element.y}<br>`;
+    })
+    render(e);
+});
+
+document.querySelector("#clear-path").addEventListener('click', (e) => {
+    path = [];
+    document.querySelector("#pathOutput").innerHTML = "Add points by clicking on the map";
+    render(e);
+});
+
+document.querySelector("#copy-path").addEventListener('click', async () => {
+    const textToCopy = JSON.stringify(path).toString();
+    navigator.clipboard.writeText(textToCopy);
+});
+
+function addPointToPath(e) {
+    let pointX = Math.round((e.clientX - viewportTransform.x)/viewportTransform.scale);
+    let pointY = Math.round(-(e.clientY - viewportTransform.y)/viewportTransform.scale);
+    path.push({x:pointX, y:pointY})
+    if (path.length == 1) {document.querySelector("#pathOutput").innerHTML = ""}
+    document.querySelector("#pathOutput").innerHTML += `[${path.length}] X: ${pointX}, Y: ${pointY}<br>`;
+}
+
+function drawPath() {
+    let k = viewportTransform.scale;
+    path.forEach(element => {
+        if (path.length > 1 && path.indexOf(element) != path.length - 1) {
+            ctx.beginPath();
+            ctx.strokeStyle = "rgb(255, 59, 59)";
+            ctx.moveTo(element.x, -element.y);
+            ctx.lineTo(path[path.indexOf(element)+1].x, -path[path.indexOf(element)+1].y);
+            ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(element.x, -element.y, 4/k, 0, 2 * Math.PI);
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+        ctx.fillStyle = "red";
+        ctx.fill();
+
+        ctx.font = `${15/k}px monospace`;
+        ctx.fillStyle = "red";
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3/k;
+        ctx.strokeText(path.indexOf(element) + 1, 
+            element.x, 
+            -element.y - 15/k);
+        ctx.fillText(path.indexOf(element) + 1, 
+            element.x, 
+            -element.y - 15/k);
+    });
+    
+}
+
+/* ================= Tools: Measure Builder ================= */
+
+let drawMeasureMode = false;
+let measurePoints = [];
+
+document.querySelector("#draw-measure").addEventListener('click', () => {
+    const pathBuilderWindow = document.querySelector(".pathBuilder");
+    pathBuilderWindow.style.display = "none";
+    document.querySelector("#draw-path").style.opacity = 0.5;
+    document.querySelector("#draw-path").style.outline = "0px solid white";
+    drawPathMode = false;
+
+    const dialogWindow = document.querySelector(".measureBuilder");
+    if (dialogWindow.style.display == "none" || dialogWindow.style.display == "") {
+        dialogWindow.style.display = "flex";
+        document.querySelector("#draw-measure").style.opacity = 1;
+        document.querySelector("#draw-measure").style.outline = "2px solid white";
+        drawMeasureMode = true;
+    } else if (dialogWindow.style.display == "flex") {
+        dialogWindow.style.display = "none";
+        document.querySelector("#draw-measure").style.opacity = 0.5;
+        document.querySelector("#draw-measure").style.outline = "0px solid white";
+        drawMeasureMode = false;
+    }
+})
+
+function addPointToMeasure(e) {
+    let pointX = Math.round((e.clientX - viewportTransform.x)/viewportTransform.scale);
+    let pointY = Math.round(-(e.clientY - viewportTransform.y)/viewportTransform.scale);
+    if (measurePoints.length < 2) {
+        measurePoints.push({x:pointX, y:pointY})
+    }
+    console.log(measurePoints)
+    if (measurePoints.length == 1) {document.querySelector("#measureOutput").innerHTML = "Put the END point on the map"};
+    if (measurePoints.length == 2) {
+        const distance = Math.hypot(
+            measurePoints[0].x - measurePoints[1].x,
+            measurePoints[0].y - measurePoints[1].y);
+        const heading12 = Math.atan2(
+            0 - (-100 * (measurePoints[0].x - measurePoints[1].x)),
+            0 + (-100 * (measurePoints[0].y - measurePoints[1].y)),
+        );
+        const heading21 = Math.atan2(
+            0 - (-100 * (measurePoints[1].x - measurePoints[0].x)),
+            0 + (-100 * (measurePoints[1].y - measurePoints[0].y)),
+        );
+        console.log(distance)
+        document.querySelector("#measureOutput").innerHTML = `
+            [Point 1] X:${measurePoints[0].x} Y:${measurePoints[0].y}<br>
+            [Point 2] X:${measurePoints[1].x} Y:${measurePoints[1].y}<br>
+            <hr>
+            [Distance]    ${(distance/1000).toFixed(3)}km | ${(distance/1000*0.621371).toFixed(3)}mi<br>
+            [X Component] ${(Math.abs(measurePoints[1].x-measurePoints[0].x)/1000).toFixed(3)}km | ${(Math.abs(measurePoints[1].x-measurePoints[0].x)/1000*0.621371).toFixed(3)}mi<br>
+            [Y Component] ${(Math.abs(measurePoints[1].y-measurePoints[0].y)/1000).toFixed(3)}km | ${(Math.abs(measurePoints[1].y-measurePoints[0].y)/1000*0.621371).toFixed(3)}mi<br>
+            <hr>
+            [Heading 1 → 2] ${mod(heading12 * (180 / Math.PI)).toFixed(3)}°<br>
+            [Heading 2 → 1] ${mod(heading21 * (180 / Math.PI)).toFixed(3)}°<br>
+        `};
+}
+
+document.querySelector("#clear-measure").addEventListener('click', (e) => {
+    measurePoints = [];
+    document.querySelector("#measureOutput").innerHTML = "Put the START point on the map";
+    render(e);
+});
+
+function drawMeasure() {
+    let k = viewportTransform.scale;
+    measurePoints.forEach(element => {
+        if (measurePoints.length == 2) {
+            ctx.beginPath();
+            ctx.strokeStyle = "rgb(255, 59, 209)";
+            ctx.moveTo(measurePoints[0].x, -measurePoints[0].y);
+            ctx.lineTo(measurePoints[1].x, -measurePoints[1].y);
+            ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(element.x, -element.y, 4/k, 0, 2 * Math.PI);
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+        ctx.fillStyle = "rgb(255, 59, 209)";
+        ctx.fill();
+
+        ctx.font = `${15/k}px monospace`;
+        ctx.fillStyle = "rgb(255, 59, 209)";
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3/k;
+        ctx.strokeText(measurePoints.indexOf(element) + 1, 
+            element.x, 
+            -element.y - 15/k);
+        ctx.fillText(measurePoints.indexOf(element) + 1, 
+            element.x, 
+            -element.y - 15/k);
+    });
+    
+}
+
+function mod(a) {
+    a = -a
+    if (a < 0) {
+        a += 360
+    }
+    return a;
+}
+
 
 render();

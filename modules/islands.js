@@ -11,15 +11,27 @@ export const islands = {
         },
         name: "Wright Isles"
     },
+    // Krakabloa: {
+    //     img: document.getElementById("krakabloa"),
+    //     scale: {
+    //         width: 1.8529,
+    //         height: 1.9045
+    //     },
+    //     offset: {
+    //         x: -13266+26352,
+    //         y: -9190-53177
+    //     },
+    //     name: "Krakabloa"
+    // },
     Krakabloa: {
         img: document.getElementById("krakabloa"),
         scale: {
-            width: 2.3406,
-            height: 2.3446
+            width: 1.87567,
+            height: 1.87397
         },
         offset: {
-            x: -13532+26392,
-            y: -9338-53185
+            x: -1383+14338,
+            y: -3395-58941
         },
         name: "Krakabloa"
     },
