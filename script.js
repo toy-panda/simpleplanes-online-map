@@ -1,8 +1,14 @@
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext('2d')
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+// const offscreenCanvas = document.createElement('canvas');
+const offscreenCanvas = document.getElementById('offscreenCanvas');
+const offscreenCtx = offscreenCanvas.getContext('2d');
+
+
 const sidebar = document.querySelector('#sidebar');
 
 import { islands } from './modules/islands.js'
+import { heightmaps } from './modules/heightmaps.js'
 import { icons } from './modules/icons.js'
 
 let isMobile = window.innerWidth < 780;
@@ -11,6 +17,9 @@ if (isMobile == true) {
     ctx.canvas.height = window.innerHeight;
     ctx.canvas.width = window.innerWidth;
 }
+
+offscreenCtx.canvas.height = window.innerHeight;
+offscreenCtx.canvas.width = window.innerWidth;
 
 const viewportTransform = {
     x: 0,
@@ -46,9 +55,12 @@ let layers = [
     },
     {
         name: "displayDesktop",
-        //type: "ship",
         enabled: true
     },
+    {
+        name: "displayXYZ",
+        enabled: true
+    }
 ]
 
 let path = []
@@ -64,6 +76,26 @@ const drawMaps = () => {
             islands[element].img.naturalWidth * islands[element].scale.width,
             islands[element].img.naturalHeight * islands[element].scale.height);
     });
+}
+
+const drawHeightmaps = () => {
+    Object.keys(heightmaps).forEach(element => {
+        if (layers[5].enabled == false) {
+            if (heightmaps[element].desktopOnly == true) {return;}
+        }
+        // ctx.drawImage(heightmaps[element].img, 
+        //     heightmaps[element].offset.x,
+        //     heightmaps[element].offset.y,
+        //     heightmaps[element].img.naturalWidth * heightmaps[element].scale.width,
+        //     heightmaps[element].img.naturalHeight * heightmaps[element].scale.height);
+        offscreenCtx.drawImage(heightmaps[element].img, 
+            heightmaps[element].offset.x,
+            heightmaps[element].offset.y,
+            heightmaps[element].img.naturalWidth * heightmaps[element].scale.width,
+            heightmaps[element].img.naturalHeight * heightmaps[element].scale.height);   
+    });
+
+    
 }
 
 const drawShipPath = (k) => {
@@ -141,12 +173,43 @@ const drawAxis = (k) => {
     ctx.fill();
 }
 
-const drawCoordinates = (xpos, ypos, k) => {
+function getZData(xpos, ypos, cx, cy, k) {
+    const pixel = offscreenCtx.getImageData(cx, cy, 1, 1).data;
+    const r = pixel[0];
+
+    const KrakabloaCenter = getCenter(islands.Krakabloa);
+    let distKrakabloa = Math.hypot(
+        KrakabloaCenter.x + xpos/k,
+        KrakabloaCenter.y + ypos/k);
+
+    if (distKrakabloa < 12000) {
+        return r * (2346 / 255);
+    } else {
+        return 0;
+    }
+}
+
+function getCenter(isalnd) {
+    const x = -isalnd.offset.x - (isalnd.img.naturalWidth * isalnd.scale.width)/2;
+    const y = -isalnd.offset.y - (isalnd.img.naturalHeight * isalnd.scale.height)/2;
+    return {x:x, y:y}
+}
+
+const drawCoordinates = (xpos, ypos, cx, cy, k) => {
+    const zpos = getZData(xpos, ypos, cx, cy, k);
     ctx.font = `bold ${18/k}px monospace`;
     ctx.fillStyle = 'white';
     ctx.textAlign = 'left';
-    ctx.fillText(`X: ${Math.round(xpos/k)}`, (xpos+10)/k, (ypos-40)/k);
-    ctx.fillText(`Y: ${Math.round(-ypos/k)}`, (xpos+10)/k, (ypos-20)/k);
+    if (layers[6].enabled == true) {
+        ctx.fillText(`X: ${Math.round(xpos/k)}`, (xpos+10)/k, (ypos-60)/k);
+        ctx.fillText(`Y: ${Math.round(-ypos/k)}`, (xpos+10)/k, (ypos-40)/k);
+        ctx.fillText(`Z: ${Math.round(zpos)}`, (xpos+10)/k, (ypos-20)/k);
+    } else {
+        ctx.fillText(`Long: ${Math.round(xpos/k)}`, (xpos+10)/k, (ypos-60)/k);
+        ctx.fillText(`Lat : ${Math.round(-ypos/k)}`, (xpos+10)/k, (ypos-40)/k);
+        ctx.fillText(`Alt : ${Math.round(zpos)}`, (xpos+10)/k, (ypos-20)/k);
+    }
+    
 }
 
 const drawPointer = (xpos, ypos, k) => {
@@ -160,19 +223,25 @@ const drawPointer = (xpos, ypos, k) => {
 }
 
 const render = (e) => {
+    // offscreenCtx
+    offscreenCtx.setTransform(1, 0, 0, 1, 0, 0);
+    offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    offscreenCtx.setTransform(viewportTransform.scale, 0, 0, viewportTransform.scale, viewportTransform.x, viewportTransform.y);
+
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (viewportTransform.scale > 5) {viewportTransform.scale = 5}
-    if (viewportTransform.scale < 0.01) {viewportTransform.scale = 0.01}
     ctx.setTransform(viewportTransform.scale, 0, 0, viewportTransform.scale, viewportTransform.x, viewportTransform.y);
 
+    drawHeightmaps();
     drawMaps();
+    // drawHeightmaps();
+    
     if (layers[0].enabled) {drawAxis(viewportTransform.scale);}
     if (layers[4].enabled) {drawShipPath(viewportTransform.scale);}
     drawIcons(viewportTransform.scale);
     drawPath();
     drawMeasure();
-    if (layers[1].enabled) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, viewportTransform.scale);}
+    if (layers[1].enabled) {drawCoordinates(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, e.clientX, e.clientY, viewportTransform.scale);}
 
     if (!isMobile) {
         if (ctx.canvas.height != sidebar.offsetHeight) {
@@ -455,9 +524,10 @@ document.querySelector("#copy-path").addEventListener('click', async () => {
 function addPointToPath(e) {
     let pointX = Math.round((e.clientX - viewportTransform.x)/viewportTransform.scale);
     let pointY = Math.round(-(e.clientY - viewportTransform.y)/viewportTransform.scale);
-    path.push({x:pointX, y:pointY})
+    let pointZ = Math.round(getZData(e.clientX - viewportTransform.x, e.clientY - viewportTransform.y, e.clientX, e.clientY, viewportTransform.scale));
+    path.push({x:pointX, y:pointY, z:pointZ})
     if (path.length == 1) {document.querySelector("#pathOutput").innerHTML = ""}
-    document.querySelector("#pathOutput").innerHTML += `[${path.length}] X: ${pointX}, Y: ${pointY}<br>`;
+    document.querySelector("#pathOutput").innerHTML += `[${path.length}] X: ${pointX}, Y: ${pointY}, Z: ${pointZ}<br>`;
 }
 
 function drawPath() {

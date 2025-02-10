@@ -152,4 +152,6 @@ export const icons = {
         color: "rgb(255,212,59)",
         type: "ship"
     }
+
+    
 }

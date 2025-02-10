@@ -54,7 +54,11 @@
                 <div class="check">
                   <input type="checkbox" id="displayDesktop" checked>
                   <label for="vehicle1"> Show PC Content</label><br>
-              </div>
+                </div>
+                <div class="check">
+                  <input type="checkbox" id="displayXYZ">
+                  <label for="vehicle1"> Long/Lat/Alt instead X/Y/Z</label><br>
+                </div>
             </div>
             
             
@@ -64,6 +68,8 @@
                 <a href="https://www.simpleplanes.com/Forums/View/2049353/RELEASE-SimplePlanes-Map" target="_blank">Forum post for feedback and suggestions</a>
             </div>
         </aside>
+        
+        <canvas width="900px" height="670px" id="offscreenCanvas" style="display: none;"></canvas>
         <canvas width="800px" height="670px" id="canvas"></canvas>
         <div id="debug"></div>
 
@@ -105,8 +111,8 @@
             <img
               id="krakabloa"
               src="./img/maps/Krakabloa.webp"
-              width="1"
-              height="1" />
+              width="7627"
+              height="7651" />
           </div>
           <div style="display:none;">
             <img
@@ -129,6 +135,15 @@
               width="6000"
               height="6000" />
           </div>
+
+        <!-- Heightmaps -->  
+        <div style="display:none;">
+          <img
+            id="krakabloa-h"
+            src="./img/maps/heightmaps/Krakabloa-Height.webp"
+            width="1600"
+            height="1610" />
+        </div>
 
         <!-- Unnamed Islands -->
         <div style="display:none;">
@@ -234,6 +249,7 @@
           </div>
 
         <script type="module" src="./modules/islands.js"></script>
+        <script type="module" src="./modules/heightmaps.js"></script>
         <script type="module" src="./modules/icons.js"></script>
         <script type="module" src="./script.js"></script>
     </body>
