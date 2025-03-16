@@ -9,7 +9,7 @@ html body {
 canvas {
     width: 75%;
     height: 100%;
-    background: #3f617b;
+    background: #325e7e;
     cursor: url(./img/cursor.svg) 15 15, auto;
 }
 
